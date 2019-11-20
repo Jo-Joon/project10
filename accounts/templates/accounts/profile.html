@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>유저가 작성한 평점 정보</h2>
+  {% comment %} {{ user_reviews }} {% endcomment %}
+  {% for user_review in user_reviews %}
+    <div>{{ user_review.content }}</div>
+  {% endfor %}
+{% endblock %}
