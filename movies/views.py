@@ -12,17 +12,6 @@ def index(request):
     context = {'movies': movies,}
     return render(request, 'movies/index.html', context)
 
-@login_required
-def create(request):
-    if request.method == 'POST':
-        form = MovieForm(request.POST)
-        if form.is_valid():
-            movie = form.save()
-            return redirect('movies:index')
-    else:
-        form = MovieForm()
-    context = {'form': form,}
-    return render(request, 'movies/form.html', context)
 
 def detail(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
@@ -30,3 +19,13 @@ def detail(request, movie_pk):
     review_form = ReviewForm()
     context = {'movie': movie, 'reviews':reviews, 'review_form':review_form,}
     return render(request, 'movies/detail.html', context)
+
+@require_POST
+def review_create(request, movie_pk):
+    if request.user.is_authenticated:
+        review_form = ReviewForm(request.POST)
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.movie_id = movie_pk
+
+        
