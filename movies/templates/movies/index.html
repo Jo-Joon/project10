@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class='text-center'>Movie List</h1>
+<hr>
+<div class="row">
+{% for movie in movies %}
+  <div class="card col-2" style="width: 18rem;">
+    <img src="{{ movie.poster_url }}" class="card-img-top" alt="영화 포스터">
+    <div class="card-body">
+      <h5 class="card-title">{{ movie.title }}</h5>
+      <p class="card-text">{{ movie.audience }}</p>
+      <a href="{% url 'movies:like' movie.pk %}">
+          {% if user in movie.like_users.all %}
+            <i class="fas fa-heart" style="color: crimson;"></i>
+          {% else %}
+            <i class="far fa-heart"></i>
+          {% endif %}
+      </a>
+      <p>{{ movie.like_users.all|length }}명이 이 영화를 좋아합니다.</p>
+      <a href="{% url 'movies:detail' movie.pk %}" class="btn btn-primary">DETAIL</a>
+    </div>
+  </div>
+{% endfor %}
+</div>
+{% endblock %}

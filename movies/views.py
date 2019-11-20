@@ -28,4 +28,23 @@ def review_create(request, movie_pk):
             review = review_form.save(commit=False)
             review.movie_id = movie_pk
 
-        
+
+@require_POST
+def review_delete(request, movie_pk, review_pk):
+    if request.user.is_authenticated:
+        review = get_object_or_404(Review, pk=review_pk)
+        if request.user == review.user:
+            review.delete()
+        return redirect('movies:detail', movie_pk)
+    
+    return HttpResponse('You are Unauthorized', status=401)
+
+@login_required
+def like(request, movie_pk):
+    movie = get_object_or_404(Movie, pk=movie_pk)
+    if movie.like_users.filter(pk=request.user.pk).exists():
+        movie.like_users.remove(request.user)
+    else:
+        movie.like_users.add(request.user)
+    return redirect('movies:index')    
+
