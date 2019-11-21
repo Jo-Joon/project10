@@ -8,6 +8,4 @@ urlpatterns = [
     path('<int:movie_pk>/review_create', views.review_create, name='review_create'),
     path('<int:movie_pk>/like/', views.like, name='like'),
     path('<int:movie_pk>/follow/<int:user_pk>/', views.follow, name='follow'),
-
-
 ]
