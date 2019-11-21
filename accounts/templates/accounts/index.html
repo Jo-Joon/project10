@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  {% for exploiter in exploiters %}
-    <p>{{ exploiter }}</p>
+  <h1 class="text-center">{{ request.resolver_match.url_name.upper }}</h1>
+  {% for index_user in index_users %}
+    <a href="{% url 'accounts:profile' index_user.pk %}">{{ index_user }}</a>
   {% endfor %}
 {% endblock %}
