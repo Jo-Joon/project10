@@ -13,13 +13,16 @@ def index(request):
     return render(request, 'movies/index.html', context)
 
 
+@login_required
 def detail(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
     reviews = movie.review_set.all()
     person = get_object_or_404(get_user_model(), pk=request.user.id)
+    genres = movie.genres.all()
     review_form = ReviewForm()
-    context = {'movie': movie, 'reviews':reviews, 'review_form':review_form, 'person': person,}
+    context = {'movie': movie, 'reviews':reviews, 'review_form':review_form, 'person': person, 'genres': genres,}
     return render(request, 'movies/detail.html', context)
+
 
 @require_POST
 def review_create(request, movie_pk):
@@ -43,10 +46,11 @@ def review_delete(request, movie_pk, review_pk):
     
     return HttpResponse('You are Unauthorized', status=401)
 
+
 @login_required
 def like(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
-    if movie.like_users.filter(pk=request.user.pk).exists():
+    if movie.like_users.filter(pk=request.user.id).exists():
         movie.like_users.remove(request.user)
     else:
         movie.like_users.add(request.user)
@@ -54,15 +58,15 @@ def like(request, movie_pk):
 
 
 @login_required
-def follow(request, movie_pk, user_pk):  # movie_pk 인자만 받아옴...
+def follow(request, movie_pk, person_pk):  # movie_pk 인자만 받아옴...
     # 게시글 유저(작성자)
-    person = get_object_or_404(get_user_model(), pk=user_pk)
+    person = get_object_or_404(get_user_model(), pk=person_pk)
     # 접속 유저(로그인)
     user = request.user
     if person != user:  # 작성자와 로그인한 사람이 달라야 한다!
         # 내가(request.user) 게시글 유저(person.user) 팔로워 목록에 이미 존재한다면,
         # if user in person.followers.all(): 동일한 기능을 함.
-        if person.followers.filter(pk=user.pk).exists():
+        if person.followers.filter(pk=user.id).exists():
             person.followers.remove(user)
         else:
             person.followers.add(user)
