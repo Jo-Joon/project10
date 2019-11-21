@@ -1,23 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1 class="text-center"> {{ profile_user }}님의 {{ request.resolver_match.url_name.upper }}</h1>
-  <h2>유저가 작성한 평점 정보</h2>
-  {% comment %} {{ user_reviews }} {% endcomment %}
-  {% for user_review in user_reviews %}
-    <div>{{ user_review.content }}</div>
-  {% endfor %}
-  <br>
-  <h2>유저가 좋아요 한 영화</h2>
-  {% for user_like_movie in user_like_movies %}
-    <div>{{ user_like_movie.title }}</div>
-  {% endfor %}
-
-  {% with followers=profile_user.followers.all followings=profile_user.followings.all %}
-  <h2>유저가 팔로워 한 사람</h2>
-    {{ followers|length }} 명
-  <h2>유저가 팔로윙 한 사람</h2>
-    {{ followings|length }} 명  
-  {% endwith %}
+<h1 class="text-center"> {{ profile_user }}님의 {{ request.resolver_match.url_name.upper }}</h1>
+<div class="jumbotron text-center">
+  <h1 class="display-4">{{ profile_user.username }}</h1>
+    {% with followers=profile_user.followers.all followings=profile_user.followings.all %}
+    <p class="lead">
+      팔로잉 : {{ followings|length }} / 팔로워 : {{ followers|length }}
+    </p>
+    <hr class="my-4"> 
+    <p>Lorem ipsum dolor sit amet.</p>
+    {% endwith %}
+</div>
+<h2>유저가 작성한 평점 정보</h2>
+{% for user_review in user_reviews %}
+  <div class="card mb-2">
+    <div class="card-body">
+      {{ user_review.score }} | {{ user_review.content }}
+    </div>
+  </div>
+{% endfor %}  
+<br>
+<h2>유저가 좋아요 한 영화</h2>
+{% for user_like_movie in user_like_movies %}
+<div class="card col-3" style="width: 18rem;">
+  <img src="{{ user_like_movie.poster_url }}" class="card-img-top" alt="영화 포스터">
+  <div class="card-body">
+    <h5 class="card-title">{{ user_like_movie.title }}</h5>
+    <p class="card-text">누적관객수: {{ user_like_movie.audience }} 명</p>
+    <a href="{% url 'movies:detail' user_like_movie.pk %}" class="btn btn-primary">DETAIL</a>
+  </div>
+</div>
+{% endfor %}
 
 {% endblock %}

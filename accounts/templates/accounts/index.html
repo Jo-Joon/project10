@@ -1,8 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1 class="text-center">{{ request.resolver_match.url_name.upper }}</h1>
+  <h1 class="text-center">회원 목록</h1>
   {% for index_user in index_users %}
-    <a href="{% url 'accounts:profile' index_user.pk %}">{{ index_user }}</a>
-  {% endfor %}
+  <div class="card mb-2">
+    <div class="card-body row">
+      <a href="{% url 'accounts:profile' index_user.pk %}">{{ index_user }}</a>
+      {% if user != index_user %}
+        {% if user in index_user.followers.all %}
+          <div class="btn btn-sm btn-primary d-inline ml-auto"><a class="text-white" href="{% url 'accounts:follow' index_user.pk %}">언팔로우</a></div>
+        {% else %}
+          <div class="d-inline btn btn-sm btn-primary ml-auto"><a class="text-white" href="{% url 'accounts:follow' index_user.pk %}">팔로우</a></div>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}  
 {% endblock %}
