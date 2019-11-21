@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1 class="text-center"> {{ profile_user }}님의 {{ request.resolver_match.url_name.upper }}</h1>
+  <h2>유저가 작성한 평점 정보</h2>
+  {% comment %} {{ user_reviews }} {% endcomment %}
+  {% for user_review in user_reviews %}
+    <div>{{ user_review.content }}</div>
+  {% endfor %}
+  <br>
+  <h2>유저가 좋아요 한 영화</h2>
+  {% for user_like_movie in user_like_movies %}
+    <div>{{ user_like_movie.title }}</div>
+  {% endfor %}
+
+  {% with followers=profile_user.followers.all followings=profile_user.followings.all %}
+  <h2>유저가 팔로워 한 사람</h2>
+    {{ followers|length }} 명
+  <h2>유저가 팔로윙 한 사람</h2>
+    {{ followings|length }} 명  
+  {% endwith %}
+
+{% endblock %}
